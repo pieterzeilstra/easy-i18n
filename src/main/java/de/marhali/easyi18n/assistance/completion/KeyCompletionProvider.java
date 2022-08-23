@@ -43,18 +43,28 @@ class KeyCompletionProvider extends CompletionProvider<CompletionParameters> imp
         ProjectSettings settings = ProjectSettingsService.get(project).getState();
         TranslationData data = InstanceManager.get(project).store().getData();
         Set<KeyPath> fullKeys = data.getFullKeys();
-
         for (KeyPath key : fullKeys) {
-            result.addElement(constructLookup(new Translation(key, data.getTranslation(key)), settings));
+            LookupElement lookupElement = constructLookup(new Translation(key, data.getTranslation(key)), settings);
+            if (lookupElement!=null) {
+                result.addElement(lookupElement);
+            }
         }
     }
 
     private LookupElement constructLookup(Translation translation, ProjectSettings settings) {
         KeyPathConverter converter = new KeyPathConverter(settings);
-
-        return LookupElementBuilder
-                .create(converter.toString(translation.getKey()))
-                .withTailText(" " + translation.getValue().get(settings.getPreviewLocale()), true)
-                .withIcon(icon);
+        if (translation.getKey().toString().contains("language_nl")) {
+            String lang = translation.getKey().remove(0);
+            if (translation.getKey().toString().contains("tenants")) {
+                translation.getKey().remove(0);
+                translation.getKey().remove(0);
+            }
+            return LookupElementBuilder
+                    .create(converter.toString(translation.getKey()))
+                    .withTailText(" " + translation.getValue().get("tenant_translation"), true)
+                    .withIcon(icon);
+        } else {
+            return null;
+        }
     }
 }
