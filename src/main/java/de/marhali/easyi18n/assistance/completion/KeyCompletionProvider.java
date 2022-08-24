@@ -11,6 +11,7 @@ import com.intellij.util.ProcessingContext;
 
 import de.marhali.easyi18n.InstanceManager;
 import de.marhali.easyi18n.assistance.OptionalAssistance;
+import de.marhali.easyi18n.io.folder.FolderStrategyType;
 import de.marhali.easyi18n.model.KeyPath;
 import de.marhali.easyi18n.model.Translation;
 import de.marhali.easyi18n.model.TranslationData;
@@ -53,18 +54,27 @@ class KeyCompletionProvider extends CompletionProvider<CompletionParameters> imp
 
     private LookupElement constructLookup(Translation translation, ProjectSettings settings) {
         KeyPathConverter converter = new KeyPathConverter(settings);
-        if (translation.getKey().toString().contains("language_nl")) {
-            String lang = translation.getKey().remove(0);
-            if (translation.getKey().toString().contains("tenants")) {
-                translation.getKey().remove(0);
+        String key = "";
+        if (settings.getFolderStrategy() == FolderStrategyType.SINGLE_FILE) {
+            if (translation.getKey().toString().contains("language_nl")) {
+                String lang = translation.getKey().remove(0);
+                if (translation.getKey().toString().contains("tenants")) {
+                    translation.getKey().remove(0);
+                    translation.getKey().remove(0);
+                }
+                key = converter.toString(translation.getKey())+".label";
+            } else {
+                return null;
+            }
+        } else {
+            if (translation.getKey().toString().contains("components")) {
                 translation.getKey().remove(0);
             }
-            return LookupElementBuilder
-                    .create(converter.toString(translation.getKey()))
-                    .withTailText(" " + translation.getValue().get("tenant_translation"), true)
-                    .withIcon(icon);
-        } else {
-            return null;
+            key = converter.toString(translation.getKey())+".label";
         }
+        return LookupElementBuilder
+                .create(key)
+                .withTailText(" " + translation.getValue().get(settings.getPreviewLocale()), true)
+                .withIcon(icon);
     }
 }

@@ -6,8 +6,11 @@ package de.marhali.easyi18n.io.folder;
  */
 public enum FolderStrategyType {
     SINGLE(SingleFolderStrategy.class, false),
+
     MODULARIZED_LOCALE(ModularLocaleFolderStrategy.class, true),
-    MODULARIZED_NAMESPACE(ModularNamespaceFolderStrategy.class, true);
+    MODULARIZED_NAMESPACE(ModularNamespaceFolderStrategy.class, true),
+    SINGLE_FILE(SingleFileStrategy.class, false);
+
 
     private final Class<? extends FolderStrategy> strategy;
     private final boolean namespaceMode;

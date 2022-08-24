@@ -9,8 +9,10 @@ import de.marhali.easyi18n.settings.ProjectSettings;
  */
 public enum Preset {
     DEFAULT(DefaultPreset.class),
-    VUE_I18N(VueI18nPreset.class),
-    REACT_I18NEXT(ReactI18NextPreset.class);
+//    VUE_I18N(VueI18nPreset.class),
+    COMPONENTS(ComponentsPreset.class),
+    TENANTS(TenantsPreset.class);
+//    REACT_I18NEXT(ReactI18NextPreset.class);
 
     private final Class<? extends ProjectSettings> clazz;
 
